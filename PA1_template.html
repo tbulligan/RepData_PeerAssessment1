@@ -220,7 +220,12 @@ names(daily.steps) &lt;- c(&quot;date&quot;, &quot;steps&quot;)
 
 # Plot steps taken each day
 library(ggplot2)
-qplot(data = daily.steps, x = date, y = steps, stat = &quot;identity&quot;,
+</code></pre>
+
+<pre><code>## Use suppressPackageStartupMessages to eliminate package startup messages.
+</code></pre>
+
+<pre><code class="r">qplot(data = daily.steps, x = date, y = steps, stat = &quot;identity&quot;,
       geom = &quot;bar&quot;) + labs(title = &quot;Fig. 1: Number of steps per day&quot;,
                            x = &quot;Date&quot;, y = &quot;Steps&quot;)
 </code></pre>

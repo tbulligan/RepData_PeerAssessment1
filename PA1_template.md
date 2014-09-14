@@ -28,6 +28,13 @@ names(daily.steps) <- c("date", "steps")
 
 # Plot steps taken each day
 library(ggplot2)
+```
+
+```
+## Use suppressPackageStartupMessages to eliminate package startup messages.
+```
+
+```r
 qplot(data = daily.steps, x = date, y = steps, stat = "identity",
       geom = "bar") + labs(title = "Fig. 1: Number of steps per day",
                            x = "Date", y = "Steps")
