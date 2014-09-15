@@ -5,20 +5,27 @@ date: "Sunday, September 14, 2014"
 output: html_document
 ---
 
+
+
+# Reproducible Research: Peer Assessment 1
+
 *Make sure to read READNE.md for additional information as to the scope of this research and instruction on how to obtain the data needed for the analysis.*
 
 ## Loading and preprocessing the data
 
 We will load the data from the csv file provided with the assignment. Make sure said file has been extracted from its archive.
 
+The date field will be converted to POSIX format for ease of analysis.
+
 
 ```r
-# Load data set and convert date format to POSIX
 activity <- read.csv("activity.csv", stringsAsFactors = FALSE)
 activity$date <- as.Date(activity$date)
 ```
 
 ## What is mean total number of steps taken per day?
+
+Next we will calculate and plot the total number of steps taken each day.
 
 
 ```r
@@ -28,23 +35,18 @@ names(daily.steps) <- c("date", "steps")
 
 # Plot steps taken each day
 library(ggplot2)
-```
-
-```
-## Use suppressPackageStartupMessages to eliminate package startup messages.
-```
-
-```r
 qplot(data = daily.steps, x = date, y = steps, stat = "identity",
       geom = "bar") + labs(title = "Fig. 1: Number of steps per day",
                            x = "Date", y = "Steps")
 ```
 
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2.png) 
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3.png) 
+
+Lastly we will compute the mean and the median of the total steps taken each day.
+
 
 ```r
-# Calculate mean and median of steps per day
-mean.steps.day <- print(mean(daily.steps$steps))
+mean.steps.day <- print(mean(daily.steps$steps, nsmall = 2))
 ```
 
 ```
@@ -61,6 +63,8 @@ median.steps.day <- print(median(daily.steps$steps))
 
 ## What is the average daily activity pattern?
 
+With a methodology similar to that used to answer the previous question, we will calculate and plot the average steps taken per each 5-minute time interval.
+
 
 ```r
 # Calculate average steps taken each interval
@@ -73,10 +77,12 @@ qplot(data = steps.intervals, x = interval, y = steps, geom = "line") +
          x = "Interval", y = "Steps")
 ```
 
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3.png) 
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5.png) 
+
+The interval with the maximum activity is the following:
+
 
 ```r
-# Find interval with highest average steps
 steps.intervals[which.max(steps.intervals$steps), ]
 ```
 
@@ -119,7 +125,7 @@ qplot(data = activity.filled, x = date, y = steps, stat = "identity",
                            x = "Date", y = "Steps")
 ```
 
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5.png) 
+![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8.png) 
 
 Lastly we will assess the impact of imputing missing values on the accuracy of our calculations.
 
@@ -129,7 +135,7 @@ Lastly we will assess the impact of imputing missing values on the accuracy of o
 daily.steps.filled <- aggregate(steps ~ date, activity.filled, sum, na.rm = T)
 
 # Calculate mean and median of steps per day with imputed missing values
-mean.steps.day.filled <- print(mean(daily.steps.filled$steps))
+mean.steps.day.filled <- print(mean(daily.steps.filled$steps, nsmall = 2))
 ```
 
 ```
@@ -166,23 +172,31 @@ According to the above data, the impact of imputing missing values is negligible
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
+The first step will be to identify which days fall on a weekday and which on a weekend. For this calculation the imputed values will be used.
+
 
 ```r
-# Determine whether a date falls in a weekday or weekend
 weekend.days <- c("Saturday", "Sunday")
 activity.filled$daytype <- weekdays(activity.filled$date)
 activity.filled$daytype <- ifelse(activity.filled$daytype %in% weekend.days,
                                   "weekend", "weekday")
 activity.filled$daytype <- factor(activity.filled$daytype)
+```
 
-# Plot a comparison of steps taken per time interval between work days and weekend days
+The following plot compares the steps taken in each 5-minute interval during weekdays and weekend days.
+
+
+```r
+# Calculate comparison of steps per interval between weekdays and weekend days
 steps.intervals.filled <- with(activity.filled,
                               aggregate(steps, list(daytype, interval), mean))
 names(steps.intervals.filled) <- c("daytype", "interval", "steps")
+
+# Plot comparison of steps per interval between weekdays and weekend days
 qplot(data = steps.intervals.filled, x = interval, y = steps, geom = "line") +
     labs(title = "Fig. 4: Number of steps per time interval per part of week",
                             x = "Interval", y = "Steps") +
     facet_grid(daytype ~ .)
 ```
 
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7.png) 
+![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11.png) 
