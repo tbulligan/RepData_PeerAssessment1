@@ -8,7 +8,6 @@ output: html_document
 ```{r echo=FALSE}
 library(knitr)
 library(ggplot2)
-library(cairoDevice)
 opts_chunk$set(dev='CairoPNG')
 ```
 
@@ -37,7 +36,6 @@ daily.steps <- aggregate(steps ~ date, activity, sum, na.rm = TRUE)
 names(daily.steps) <- c("date", "steps")
 
 # Plot steps taken each day
-library(ggplot2)
 qplot(data = daily.steps, x = date, y = steps, stat = "identity",
       geom = "bar") + labs(title = "Fig. 1: Number of steps per day",
                            x = "Date", y = "Steps")
